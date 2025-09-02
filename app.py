@@ -1725,6 +1725,858 @@ def transaction_approve(txn_id):
     conn.close()
     return redirect('/transactions')
 
+@app.route('/cashboxes')
+@login_required
+def cashboxes():
+    conn = get_db()
+    c = conn.cursor()
+    
+    c.execute("SELECT * FROM cashboxes ORDER BY code")
+    cashboxes = []
+    for box in c.fetchall():
+        balance = calculate_balance(box['id'])
+        cashboxes.append({
+            'id': box['id'],
+            'code': box['code'],
+            'name': box['name'],
+            'currency': box['currency'],
+            'opening_balance': box['opening_balance'],
+            'balance': balance,
+            'is_active': box['is_active']
+        })
+    
+    conn.close()
+    
+    # بناء الصفحة
+    navbar = f'''
+    <nav class="navbar main-navbar fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-brand">
+                <i class="fas fa-cash-register"></i>
+                نظام إدارة الخزينة الاحترافي
+            </div>
+            
+            <div class="user-menu">
+                <span>مرحباً، {session['full_name']}</span>
+                <div class="user-avatar">{session['username'][0].upper()}</div>
+                <a href="/logout" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> خروج
+                </a>
+            </div>
+        </div>
+    </nav>
+    '''
+    
+    sidebar = '''
+    <aside class="sidebar">
+        <div class="sidebar-menu">
+            <div class="sidebar-item">
+                <a href="/dashboard" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/transactions" class="sidebar-link">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>المعاملات</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/cashboxes" class="sidebar-link active">
+                    <i class="fas fa-cash-register"></i>
+                    <span>الخزائن</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/partners" class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>الشركاء</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/categories" class="sidebar-link">
+                    <i class="fas fa-tags"></i>
+                    <span>التصنيفات</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/reports" class="sidebar-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>التقارير</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    '''
+    
+    content = navbar + sidebar + f'''
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-cash-register"></i> الخزائن</h2>
+            </div>
+            
+            <div class="row">
+    '''
+    
+    for box in cashboxes:
+        status_color = 'success' if box['is_active'] else 'secondary'
+        status_text = 'نشط' if box['is_active'] else 'غير نشط'
+        
+        content += f'''
+                <div class="col-md-4 mb-4">
+                    <div class="stat-card animate-in">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h4>{box['name']}</h4>
+                                <p class="text-muted mb-0">كود: {box['code']}</p>
+                            </div>
+                            <span class="badge bg-{status_color}">{status_text}</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-muted">الرصيد الافتتاحي</small>
+                            <div class="h5 mb-0">{box['opening_balance']:,.2f} {box['currency']}</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-muted">الرصيد الحالي</small>
+                            <div class="h4 mb-0 text-primary">{box['balance']:,.2f} {box['currency']}</div>
+                        </div>
+                        
+                        <div class="progress mb-3" style="height: 10px;">
+                            <div class="progress-bar bg-primary" style="width: {min(100, (box['balance'] / max(box['opening_balance'], 1)) * 100):.0f}%"></div>
+                        </div>
+                        
+                        <a href="/transactions?cashbox={box['id']}" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="fas fa-list"></i> عرض المعاملات
+                        </a>
+                    </div>
+                </div>
+        '''
+    
+    content += '''
+            </div>
+        </div>
+    </div>
+    '''
+    
+    return render_template_string(MAIN_TEMPLATE, content=content, title='الخزائن')
+
+@app.route('/partners')
+@login_required
+def partners():
+    conn = get_db()
+    c = conn.cursor()
+    
+    c.execute("SELECT * FROM partners ORDER BY name")
+    partners = c.fetchall()
+    
+    conn.close()
+    
+    # بناء الصفحة
+    navbar = f'''
+    <nav class="navbar main-navbar fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-brand">
+                <i class="fas fa-cash-register"></i>
+                نظام إدارة الخزينة الاحترافي
+            </div>
+            
+            <div class="user-menu">
+                <span>مرحباً، {session['full_name']}</span>
+                <div class="user-avatar">{session['username'][0].upper()}</div>
+                <a href="/logout" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> خروج
+                </a>
+            </div>
+        </div>
+    </nav>
+    '''
+    
+    sidebar = '''
+    <aside class="sidebar">
+        <div class="sidebar-menu">
+            <div class="sidebar-item">
+                <a href="/dashboard" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/transactions" class="sidebar-link">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>المعاملات</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/cashboxes" class="sidebar-link">
+                    <i class="fas fa-cash-register"></i>
+                    <span>الخزائن</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/partners" class="sidebar-link active">
+                    <i class="fas fa-users"></i>
+                    <span>الشركاء</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/categories" class="sidebar-link">
+                    <i class="fas fa-tags"></i>
+                    <span>التصنيفات</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/reports" class="sidebar-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>التقارير</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    '''
+    
+    content = navbar + sidebar + f'''
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-users"></i> الشركاء</h2>
+            </div>
+            
+            <div class="data-table">
+                <div class="table-header">
+                    <h3><i class="fas fa-list"></i> قائمة الشركاء</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>النوع</th>
+                                <th>الهاتف</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+    '''
+    
+    for partner in partners:
+        kind_badge = {
+            'customer': '<span class="badge bg-info">عميل</span>',
+            'supplier': '<span class="badge bg-warning">مورد</span>',
+            'other': '<span class="badge bg-secondary">أخرى</span>'
+        }.get(partner['kind'], '')
+        
+        status_badge = '<span class="badge bg-success">نشط</span>' if partner['is_active'] else '<span class="badge bg-secondary">غير نشط</span>'
+        
+        content += f'''
+                            <tr>
+                                <td><strong>{partner['name']}</strong></td>
+                                <td>{kind_badge}</td>
+                                <td>{partner['phone'] or '-'}</td>
+                                <td>{partner['email'] or '-'}</td>
+                                <td>{status_badge}</td>
+                            </tr>
+        '''
+    
+    content += '''
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    '''
+    
+    return render_template_string(MAIN_TEMPLATE, content=content, title='الشركاء')
+
+@app.route('/categories')
+@login_required
+def categories():
+    conn = get_db()
+    c = conn.cursor()
+    
+    c.execute("SELECT * FROM categories ORDER BY kind, name")
+    categories = c.fetchall()
+    
+    conn.close()
+    
+    # بناء الصفحة
+    navbar = f'''
+    <nav class="navbar main-navbar fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-brand">
+                <i class="fas fa-cash-register"></i>
+                نظام إدارة الخزينة الاحترافي
+            </div>
+            
+            <div class="user-menu">
+                <span>مرحباً، {session['full_name']}</span>
+                <div class="user-avatar">{session['username'][0].upper()}</div>
+                <a href="/logout" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> خروج
+                </a>
+            </div>
+        </div>
+    </nav>
+    '''
+    
+    sidebar = '''
+    <aside class="sidebar">
+        <div class="sidebar-menu">
+            <div class="sidebar-item">
+                <a href="/dashboard" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/transactions" class="sidebar-link">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>المعاملات</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/cashboxes" class="sidebar-link">
+                    <i class="fas fa-cash-register"></i>
+                    <span>الخزائن</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/partners" class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>الشركاء</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/categories" class="sidebar-link active">
+                    <i class="fas fa-tags"></i>
+                    <span>التصنيفات</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/reports" class="sidebar-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>التقارير</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    '''
+    
+    content = navbar + sidebar + f'''
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-tags"></i> التصنيفات</h2>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-arrow-down"></i> تصنيفات الإيرادات</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+    '''
+    
+    for cat in categories:
+        if cat['kind'] == 'income':
+            content += f'''
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{cat['name']}</span>
+                                {'<span class="badge bg-success">نشط</span>' if cat['is_active'] else '<span class="badge bg-secondary">غير نشط</span>'}
+                            </div>
+            '''
+    
+    content += '''
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0"><i class="fas fa-arrow-up"></i> تصنيفات المصروفات</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+    '''
+    
+    for cat in categories:
+        if cat['kind'] == 'expense':
+            content += f'''
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{cat['name']}</span>
+                                {'<span class="badge bg-success">نشط</span>' if cat['is_active'] else '<span class="badge bg-secondary">غير نشط</span>'}
+                            </div>
+            '''
+    
+    content += '''
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fas fa-exchange-alt"></i> تصنيفات التحويلات</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+    '''
+    
+    for cat in categories:
+        if cat['kind'] == 'transfer':
+            content += f'''
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{cat['name']}</span>
+                                {'<span class="badge bg-success">نشط</span>' if cat['is_active'] else '<span class="badge bg-secondary">غير نشط</span>'}
+                            </div>
+            '''
+    
+    content += '''
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    '''
+    
+    return render_template_string(MAIN_TEMPLATE, content=content, title='التصنيفات')
+
+@app.route('/transfers/new', methods=['GET', 'POST'])
+@login_required
+@check_permission('create')
+def transfer_new():
+    if request.method == 'POST':
+        from_box = request.form.get('from_box')
+        to_box = request.form.get('to_box')
+        amount = float(request.form.get('amount'))
+        description = request.form.get('description')
+        
+        if from_box == to_box:
+            return '''<script>
+                alert('لا يمكن التحويل من وإلى نفس الخزنة');
+                window.history.back();
+            </script>'''
+        
+        # التحقق من الرصيد
+        from_balance = calculate_balance(from_box)
+        if from_balance < amount:
+            return '''<script>
+                alert('الرصيد غير كافي للتحويل');
+                window.history.back();
+            </script>'''
+        
+        if create_transfer(from_box, to_box, amount, session['user_id'], description):
+            return '''<script>
+                alert('تم التحويل بنجاح');
+                window.location.href = '/transactions';
+            </script>'''
+        else:
+            return '''<script>
+                alert('حدث خطأ في التحويل');
+                window.history.back();
+            </script>'''
+    
+    # الحصول على الخزائن
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT * FROM cashboxes WHERE is_active = 1")
+    cashboxes = []
+    for box in c.fetchall():
+        balance = calculate_balance(box['id'])
+        cashboxes.append({
+            'id': box['id'],
+            'code': box['code'],
+            'name': box['name'],
+            'balance': balance,
+            'currency': box['currency']
+        })
+    conn.close()
+    
+    # بناء الصفحة
+    navbar = f'''
+    <nav class="navbar main-navbar fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-brand">
+                <i class="fas fa-cash-register"></i>
+                نظام إدارة الخزينة الاحترافي
+            </div>
+            
+            <div class="user-menu">
+                <span>مرحباً، {session['full_name']}</span>
+                <div class="user-avatar">{session['username'][0].upper()}</div>
+                <a href="/logout" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> خروج
+                </a>
+            </div>
+        </div>
+    </nav>
+    '''
+    
+    sidebar = '''
+    <aside class="sidebar">
+        <div class="sidebar-menu">
+            <div class="sidebar-item">
+                <a href="/dashboard" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/transactions" class="sidebar-link active">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>المعاملات</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    '''
+    
+    content = navbar + sidebar + f'''
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-exchange-alt"></i> تحويل بين الخزائن
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" class="form-modern">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">من خزنة *</label>
+                                        <select name="from_box" class="form-select" required onchange="updateFromBalance()">
+                                            <option value="">اختر...</option>
+    '''
+    
+    for box in cashboxes:
+        content += f'<option value="{box["id"]}" data-balance="{box["balance"]}">{box["name"]} - رصيد: {box["balance"]:,.2f} {box["currency"]}</option>'
+    
+    content += '''
+                                        </select>
+                                        <small class="text-muted">الرصيد المتاح: <span id="from_balance">0.00</span></small>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">إلى خزنة *</label>
+                                        <select name="to_box" class="form-select" required>
+                                            <option value="">اختر...</option>
+    '''
+    
+    for box in cashboxes:
+        content += f'<option value="{box["id"]}">{box["name"]} - رصيد: {box["balance"]:,.2f} {box["currency"]}</option>'
+    
+    content += f'''
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">المبلغ *</label>
+                                        <input type="number" name="amount" class="form-control" 
+                                               step="0.01" min="0.01" required>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label class="form-label">التاريخ</label>
+                                        <input type="date" class="form-control" value="{date.today()}" readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">الوصف</label>
+                                    <textarea name="description" class="form-control" rows="3" 
+                                              placeholder="سبب التحويل..."></textarea>
+                                </div>
+                                
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i>
+                                    سيتم إنشاء سندين: سند صرف من الخزنة المحول منها وسند قبض للخزنة المحول إليها
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <button type="submit" class="btn btn-success btn-modern">
+                                        <i class="fas fa-exchange-alt"></i> تنفيذ التحويل
+                                    </button>
+                                    <a href="/transactions" class="btn btn-secondary btn-modern">
+                                        <i class="fas fa-times"></i> إلغاء
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function updateFromBalance() {{
+        var select = document.querySelector('select[name="from_box"]');
+        var balance = select.options[select.selectedIndex].getAttribute('data-balance');
+        document.getElementById('from_balance').textContent = parseFloat(balance || 0).toLocaleString('ar-EG', {{minimumFractionDigits: 2}});
+    }}
+    </script>
+    '''
+    
+    return render_template_string(MAIN_TEMPLATE, content=content, title='تحويل بين الخزائن')
+
+@app.route('/reports')
+@login_required
+def reports():
+    conn = get_db()
+    c = conn.cursor()
+    
+    # تقرير ملخص
+    today = date.today()
+    month_start = date(today.year, today.month, 1)
+    
+    # إحصائيات الشهر
+    c.execute("""SELECT 
+                    SUM(CASE WHEN txn_type IN ('receipt', 'transfer_in') THEN amount ELSE 0 END) as income,
+                    SUM(CASE WHEN txn_type IN ('payment', 'transfer_out') THEN amount ELSE 0 END) as expense,
+                    COUNT(*) as count
+                 FROM transactions 
+                 WHERE date >= ? AND status = 'approved'""", (month_start,))
+    month_stats = c.fetchone()
+    
+    # إحصائيات حسب التصنيف
+    c.execute("""SELECT c.name, c.kind, SUM(t.amount) as total
+                 FROM transactions t
+                 JOIN categories c ON t.category_id = c.id
+                 WHERE t.status = 'approved' AND t.date >= ?
+                 GROUP BY c.id, c.name, c.kind
+                 ORDER BY total DESC""", (month_start,))
+    category_stats = c.fetchall()
+    
+    # إحصائيات حسب الشريك
+    c.execute("""SELECT p.name, p.kind, SUM(t.amount) as total, COUNT(*) as count
+                 FROM transactions t
+                 JOIN partners p ON t.partner_id = p.id
+                 WHERE t.status = 'approved' AND t.date >= ?
+                 GROUP BY p.id, p.name, p.kind
+                 ORDER BY total DESC
+                 LIMIT 10""", (month_start,))
+    partner_stats = c.fetchall()
+    
+    conn.close()
+    
+    # بناء الصفحة
+    navbar = f'''
+    <nav class="navbar main-navbar fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-brand">
+                <i class="fas fa-cash-register"></i>
+                نظام إدارة الخزينة الاحترافي
+            </div>
+            
+            <div class="user-menu">
+                <span>مرحباً، {session['full_name']}</span>
+                <div class="user-avatar">{session['username'][0].upper()}</div>
+                <a href="/logout" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> خروج
+                </a>
+            </div>
+        </div>
+    </nav>
+    '''
+    
+    sidebar = '''
+    <aside class="sidebar">
+        <div class="sidebar-menu">
+            <div class="sidebar-item">
+                <a href="/dashboard" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/transactions" class="sidebar-link">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>المعاملات</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/cashboxes" class="sidebar-link">
+                    <i class="fas fa-cash-register"></i>
+                    <span>الخزائن</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/partners" class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>الشركاء</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/categories" class="sidebar-link">
+                    <i class="fas fa-tags"></i>
+                    <span>التصنيفات</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-item">
+                <a href="/reports" class="sidebar-link active">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>التقارير</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    '''
+    
+    content = navbar + sidebar + f'''
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-chart-bar"></i> التقارير</h2>
+                <span class="text-muted">تقرير شهر {today.strftime('%B %Y')}</span>
+            </div>
+            
+            <!-- ملخص الشهر -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="stat-card success">
+                        <i class="fas fa-arrow-down stat-icon"></i>
+                        <div class="stat-value">{month_stats['income'] or 0:,.2f}</div>
+                        <div class="stat-label">إجمالي الإيرادات</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="stat-card danger">
+                        <i class="fas fa-arrow-up stat-icon"></i>
+                        <div class="stat-value">{month_stats['expense'] or 0:,.2f}</div>
+                        <div class="stat-label">إجمالي المصروفات</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="stat-card primary">
+                        <i class="fas fa-balance-scale stat-icon"></i>
+                        <div class="stat-value">{(month_stats['income'] or 0) - (month_stats['expense'] or 0):,.2f}</div>
+                        <div class="stat-label">صافي الشهر</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- تقرير التصنيفات -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="data-table">
+                        <div class="table-header">
+                            <h3><i class="fas fa-tags"></i> حسب التصنيف</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>التصنيف</th>
+                                        <th>النوع</th>
+                                        <th>المبلغ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+    '''
+    
+    for cat in category_stats[:10]:
+        kind_badge = {
+            'income': '<span class="badge bg-success">إيراد</span>',
+            'expense': '<span class="badge bg-danger">مصروف</span>',
+            'transfer': '<span class="badge bg-info">تحويل</span>'
+        }.get(cat['kind'], '')
+        
+        content += f'''
+                                    <tr>
+                                        <td>{cat['name']}</td>
+                                        <td>{kind_badge}</td>
+                                        <td><strong>{cat['total']:,.2f}</strong></td>
+                                    </tr>
+        '''
+    
+    content += '''
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="data-table">
+                        <div class="table-header">
+                            <h3><i class="fas fa-users"></i> حسب الشريك</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>الشريك</th>
+                                        <th>النوع</th>
+                                        <th>المبلغ</th>
+                                        <th>العمليات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+    '''
+    
+    for partner in partner_stats:
+        kind_badge = {
+            'customer': '<span class="badge bg-info">عميل</span>',
+            'supplier': '<span class="badge bg-warning">مورد</span>',
+            'other': '<span class="badge bg-secondary">أخرى</span>'
+        }.get(partner['kind'], '')
+        
+        content += f'''
+                                    <tr>
+                                        <td>{partner['name']}</td>
+                                        <td>{kind_badge}</td>
+                                        <td><strong>{partner['total']:,.2f}</strong></td>
+                                        <td>{partner['count']}</td>
+                                    </tr>
+        '''
+    
+    content += '''
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    '''
+    
+    return render_template_string(MAIN_TEMPLATE, content=content, title='التقارير')
+
 @app.route('/health')
 def health():
     return 'OK', 200
