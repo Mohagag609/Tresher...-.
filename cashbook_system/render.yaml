@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: cashbook-system
-    env: python
-    buildCommand: "pip install Flask werkzeug gunicorn"
-    startCommand: "gunicorn app_simple_final:app"
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
