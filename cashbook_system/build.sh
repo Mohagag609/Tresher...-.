@@ -9,7 +9,10 @@ pip install Flask werkzeug gunicorn
 # Create directories
 mkdir -p instance
 
-# Initialize database
+# Remove old database if exists
+rm -f instance/cashbook.db
+
+# Initialize database with correct schema
 python fix_database.py
 
 echo "✅ Build completed!"

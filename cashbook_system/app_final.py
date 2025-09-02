@@ -176,30 +176,32 @@ DASHBOARD_HTML = '''
 
 def init_db():
     """Initialize database with default data"""
-    conn = sqlite3.connect('instance/cashbook.db')
-    cursor = conn.cursor()
-    
-    # Create tables
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY,
-        username TEXT UNIQUE,
-        password_hash TEXT,
-        full_name TEXT
-    )''')
-    
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS cashboxes (
-        id INTEGER PRIMARY KEY,
-        code TEXT,
-        name TEXT,
-        currency TEXT,
-        balance REAL
-    )''')
-    
-    # Check if admin exists
-    cursor.execute('SELECT id FROM users WHERE username = ?', ('admin',))
-    if not cursor.fetchone():
+    try:
+        conn = sqlite3.connect('instance/cashbook.db')
+        cursor = conn.cursor()
+        
+        # Drop and recreate tables to ensure correct schema
+        cursor.execute('DROP TABLE IF EXISTS users')
+        cursor.execute('DROP TABLE IF EXISTS cashboxes')
+        
+        # Create tables with correct schema
+        cursor.execute('''
+        CREATE TABLE users (
+            id INTEGER PRIMARY KEY,
+            username TEXT UNIQUE,
+            password_hash TEXT,
+            full_name TEXT
+        )''')
+        
+        cursor.execute('''
+        CREATE TABLE cashboxes (
+            id INTEGER PRIMARY KEY,
+            code TEXT,
+            name TEXT,
+            currency TEXT,
+            balance REAL
+        )''')
+        
         # Add users
         admin_hash = generate_password_hash('admin123')
         demo_hash = generate_password_hash('demo123')
@@ -209,15 +211,19 @@ def init_db():
         cursor.execute('INSERT INTO users (username, password_hash, full_name) VALUES (?, ?, ?)',
                       ('demo', demo_hash, 'مستخدم تجريبي'))
         
-        # Add cashboxes
+        # Add cashboxes with balance column
         cursor.execute('''INSERT INTO cashboxes (code, name, currency, balance) VALUES
                          ('MAIN', 'الخزنة الرئيسية', 'EGP', 10000),
                          ('PETTY', 'العهدة النثرية', 'EGP', 2000),
                          ('BANK', 'الحساب البنكي', 'EGP', 50000)''')
         
         conn.commit()
-    
-    conn.close()
+        conn.close()
+        print("Database initialized successfully!")
+    except Exception as e:
+        print(f"Database init error: {e}")
+        if conn:
+            conn.close()
 
 @app.route('/')
 def index():
