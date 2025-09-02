@@ -395,17 +395,35 @@ MAIN_TEMPLATE = '''
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --success-color: #06ffa5;
-            --danger-color: #ff006e;
-            --warning-color: #ffbe0b;
-            --info-color: #00b4d8;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --danger-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            --warning-gradient: linear-gradient(135deg, #fddb92 0%, #d1fdff 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            --primary-color: #6c63ff;
+            --secondary-color: #ff6584;
+            --success-color: #00d4ff;
+            --danger-color: #ff4757;
+            --warning-color: #feca57;
+            --info-color: #48dbfb;
             --dark-color: #0a0e27;
-            --light-color: #f8f9fa;
+            --light-color: #ffffff;
             --sidebar-width: 280px;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
         }
         
         * {
@@ -416,8 +434,25 @@ MAIN_TEMPLATE = '''
         
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 219, 112, 0.2) 0%, transparent 50%);
+            z-index: -1;
         }
         
         /* Scrollbar */
@@ -495,9 +530,18 @@ MAIN_TEMPLATE = '''
         
         /* Navbar */
         .main-navbar {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 0.75rem 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .main-navbar:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom-color: rgba(255, 255, 255, 0.3);
         }
         
         .navbar-brand {
@@ -535,12 +579,17 @@ MAIN_TEMPLATE = '''
         /* Sidebar */
         .sidebar {
             position: fixed;
-            top: 70px;
+            top: 85px;
             right: 0;
             width: var(--sidebar-width);
-            height: calc(100vh - 70px);
-            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1e 100%);
-            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            height: calc(100vh - 85px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--glass-border);
+            box-shadow: 
+                -8px 0 32px 0 rgba(31, 38, 135, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.02);
             overflow-y: auto;
             transition: all 0.3s ease;
             z-index: 100;
@@ -600,13 +649,18 @@ MAIN_TEMPLATE = '''
             margin-top: 70px;
         }
         
-        /* Cards */
+        /* Glass Cards */
         .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 8px 32px 0 rgba(31, 38, 135, 0.37),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
         }
@@ -614,38 +668,49 @@ MAIN_TEMPLATE = '''
         .stat-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
-            border-radius: 50%;
-            transform: translate(30px, -30px);
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
         }
         
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 15px 40px 0 rgba(31, 38, 135, 0.5),
+                inset 0 0 30px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .stat-card:hover::before {
+            transform: rotate(45deg) translateY(20px);
         }
         
         .stat-card.primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: var(--primary-gradient);
+            border: 1px solid rgba(108, 99, 255, 0.3);
             color: white;
         }
         
         .stat-card.success {
-            background: linear-gradient(135deg, #06ffa5, #00d084);
+            background: var(--success-gradient);
+            border: 1px solid rgba(0, 212, 255, 0.3);
             color: white;
         }
         
         .stat-card.danger {
-            background: linear-gradient(135deg, #ff006e, #c9184a);
+            background: var(--danger-gradient);
+            border: 1px solid rgba(255, 71, 87, 0.3);
             color: white;
         }
         
         .stat-card.warning {
-            background: linear-gradient(135deg, #ffbe0b, #fb8500);
-            color: white;
+            background: var(--warning-gradient);
+            border: 1px solid rgba(254, 202, 87, 0.3);
+            color: #333;
         }
         
         .stat-icon {
@@ -1106,18 +1171,18 @@ def dashboard():
     '''
     
     content = navbar + sidebar + f'''
-    <div class="main-content">
+    <div class="main-content" style="background: transparent;">
         <div class="container-fluid">
             <!-- العنوان -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="animate-in">
-                    <i class="fas fa-tachometer-alt"></i> لوحة التحكم
+            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
+                <h2 style="color: white;">
+                    <i class="fas fa-tachometer-alt"></i> لوحة التحكم الرئيسية
                 </h2>
                 <div>
-                    <a href="/transactions/new" class="btn btn-primary btn-modern">
+                    <a href="/transactions/new" class="btn btn-primary btn-modern" style="background: var(--primary-gradient); border: none;">
                         <i class="fas fa-plus"></i> معاملة جديدة
                     </a>
-                    <a href="/transfers/new" class="btn btn-success btn-modern">
+                    <a href="/transfers/new" class="btn btn-success btn-modern" style="background: var(--success-gradient); border: none;">
                         <i class="fas fa-exchange-alt"></i> تحويل بين الخزائن
                     </a>
                 </div>
@@ -1125,55 +1190,67 @@ def dashboard():
             
             <!-- الإحصائيات -->
             <div class="row mb-4">
-                <div class="col-md-3 mb-3">
-                    <div class="stat-card primary animate-in">
-                        <i class="fas fa-coins stat-icon"></i>
+                <div class="col-md-3 mb-3" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="stat-card primary">
+                        <i class="fas fa-wallet stat-icon"></i>
                         <div class="stat-value">{total_balance:,.2f}</div>
                         <div class="stat-label">إجمالي الأرصدة</div>
+                        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.2);">
+                            <div class="progress-bar" style="width: 100%; background: white;"></div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3 mb-3">
-                    <div class="stat-card success animate-in" style="animation-delay: 0.1s;">
-                        <i class="fas fa-arrow-down stat-icon"></i>
+                <div class="col-md-3 mb-3" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="stat-card success">
+                        <i class="fas fa-arrow-circle-down stat-icon"></i>
                         <div class="stat-value">{today_stats['income'] or 0:,.2f}</div>
                         <div class="stat-label">مقبوضات اليوم</div>
+                        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.2);">
+                            <div class="progress-bar" style="width: 75%; background: white;"></div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3 mb-3">
-                    <div class="stat-card danger animate-in" style="animation-delay: 0.2s;">
-                        <i class="fas fa-arrow-up stat-icon"></i>
+                <div class="col-md-3 mb-3" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="stat-card danger">
+                        <i class="fas fa-arrow-circle-up stat-icon"></i>
                         <div class="stat-value">{today_stats['expense'] or 0:,.2f}</div>
                         <div class="stat-label">مدفوعات اليوم</div>
+                        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.2);">
+                            <div class="progress-bar" style="width: 60%; background: white;"></div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3 mb-3">
-                    <div class="stat-card warning animate-in" style="animation-delay: 0.3s;">
-                        <i class="fas fa-clock stat-icon"></i>
+                <div class="col-md-3 mb-3" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="stat-card warning">
+                        <i class="fas fa-hourglass-half stat-icon"></i>
                         <div class="stat-value">{pending_count}</div>
                         <div class="stat-label">معاملات معلقة</div>
+                        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.2);">
+                            <div class="progress-bar" style="width: 30%; background: #333;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- أرصدة الخزائن -->
             <div class="row mb-4">
-                <div class="col-12">
-                    <div class="data-table animate-in" style="animation-delay: 0.4s;">
-                        <div class="table-header">
+                <div class="col-12" data-aos="fade-up">
+                    <div class="data-table" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px;">
+                        <div class="table-header" style="background: var(--primary-gradient); border-radius: 20px 20px 0 0;">
                             <h3><i class="fas fa-cash-register"></i> أرصدة الخزائن</h3>
                         </div>
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table" style="color: white;">
                                 <thead>
                                     <tr>
-                                        <th>الكود</th>
-                                        <th>اسم الخزنة</th>
-                                        <th>العملة</th>
-                                        <th>الرصيد الحالي</th>
-                                        <th>الحالة</th>
+                                        <th style="color: rgba(255,255,255,0.7);">الكود</th>
+                                        <th style="color: rgba(255,255,255,0.7);">اسم الخزنة</th>
+                                        <th style="color: rgba(255,255,255,0.7);">العملة</th>
+                                        <th style="color: rgba(255,255,255,0.7);">الرصيد الحالي</th>
+                                        <th style="color: rgba(255,255,255,0.7);">الحالة</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1181,12 +1258,12 @@ def dashboard():
     
     for box in cashboxes:
         content += f'''
-                                    <tr>
-                                        <td><strong>{box['code']}</strong></td>
-                                        <td>{box['name']}</td>
-                                        <td>{box['currency']}</td>
-                                        <td><strong class="text-primary">{box['balance']:,.2f}</strong></td>
-                                        <td><span class="badge bg-success">نشط</span></td>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <td><strong style="color: #feca57;">{box['code']}</strong></td>
+                                        <td style="color: white;">{box['name']}</td>
+                                        <td><span class="badge bg-info">{box['currency']}</span></td>
+                                        <td><strong style="color: #00d4ff; font-size: 1.1rem;">{box['balance']:,.2f}</strong></td>
+                                        <td><span class="badge" style="background: var(--success-gradient);">نشط</span></td>
                                     </tr>
         '''
     
@@ -1200,22 +1277,22 @@ def dashboard():
             
             <!-- آخر المعاملات -->
             <div class="row">
-                <div class="col-12">
-                    <div class="data-table animate-in" style="animation-delay: 0.5s;">
-                        <div class="table-header">
+                <div class="col-12" data-aos="fade-up" data-aos-delay="100">
+                    <div class="data-table" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px;">
+                        <div class="table-header" style="background: var(--secondary-gradient); border-radius: 20px 20px 0 0;">
                             <h3><i class="fas fa-history"></i> آخر المعاملات</h3>
                             <a href="/transactions" class="btn btn-light btn-sm">عرض الكل</a>
                         </div>
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table" style="color: white;">
                                 <thead>
                                     <tr>
-                                        <th>رقم السند</th>
-                                        <th>التاريخ</th>
-                                        <th>النوع</th>
-                                        <th>الخزنة</th>
-                                        <th>المبلغ</th>
-                                        <th>الحالة</th>
+                                        <th style="color: rgba(255,255,255,0.7);">رقم السند</th>
+                                        <th style="color: rgba(255,255,255,0.7);">التاريخ</th>
+                                        <th style="color: rgba(255,255,255,0.7);">النوع</th>
+                                        <th style="color: rgba(255,255,255,0.7);">الخزنة</th>
+                                        <th style="color: rgba(255,255,255,0.7);">المبلغ</th>
+                                        <th style="color: rgba(255,255,255,0.7);">الحالة</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1236,12 +1313,12 @@ def dashboard():
         }.get(txn['status'], '')
         
         content += f'''
-                                    <tr>
-                                        <td><strong>{txn['voucher_no'] or '-'}</strong></td>
-                                        <td>{txn['date']}</td>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <td><strong style="color: #feca57;">{txn['voucher_no'] or '-'}</strong></td>
+                                        <td style="color: rgba(255,255,255,0.8);">{txn['date']}</td>
                                         <td>{type_badge}</td>
-                                        <td>{txn['cashbox_name']}</td>
-                                        <td><strong>{txn['amount']:,.2f}</strong></td>
+                                        <td style="color: white;">{txn['cashbox_name']}</td>
+                                        <td><strong style="color: #00d4ff;">{txn['amount']:,.2f}</strong></td>
                                         <td>{status_badge}</td>
                                     </tr>
         '''
@@ -1255,6 +1332,15 @@ def dashboard():
             </div>
         </div>
     </div>
+    
+    <script>
+    // تفعيل AOS
+    AOS.init({
+        duration: 1000,
+        once: true,
+        easing: 'ease-out-cubic'
+    });
+    </script>
     '''
     
     return render_template_string(MAIN_TEMPLATE, content=content, title='لوحة التحكم')
@@ -2365,6 +2451,17 @@ def reports():
                  WHERE date >= ? AND status = 'approved'""", (month_start,))
     month_stats = c.fetchone()
     
+    # إحصائيات يومية للشهر الحالي (للرسم البياني)
+    c.execute("""SELECT 
+                    date,
+                    SUM(CASE WHEN txn_type IN ('receipt', 'transfer_in') THEN amount ELSE 0 END) as income,
+                    SUM(CASE WHEN txn_type IN ('payment', 'transfer_out') THEN amount ELSE 0 END) as expense
+                 FROM transactions 
+                 WHERE date >= ? AND status = 'approved'
+                 GROUP BY date
+                 ORDER BY date""", (month_start,))
+    daily_stats = c.fetchall()
+    
     # إحصائيات حسب التصنيف
     c.execute("""SELECT c.name, c.kind, SUM(t.amount) as total
                  FROM transactions t
@@ -2383,6 +2480,16 @@ def reports():
                  ORDER BY total DESC
                  LIMIT 10""", (month_start,))
     partner_stats = c.fetchall()
+    
+    # إحصائيات حسب الخزنة
+    c.execute("""SELECT c.name, 
+                    SUM(CASE WHEN t.txn_type IN ('receipt', 'transfer_in') THEN t.amount ELSE 0 END) as income,
+                    SUM(CASE WHEN t.txn_type IN ('payment', 'transfer_out') THEN t.amount ELSE 0 END) as expense
+                 FROM transactions t
+                 JOIN cashboxes c ON t.cashbox_id = c.id
+                 WHERE t.status = 'approved' AND t.date >= ?
+                 GROUP BY c.id, c.name""", (month_start,))
+    cashbox_stats = c.fetchall()
     
     conn.close()
     
@@ -2454,72 +2561,152 @@ def reports():
     </aside>
     '''
     
+    # إعداد بيانات الرسوم البيانية
+    dates_labels = [str(stat['date']) for stat in daily_stats]
+    income_data = [float(stat['income'] or 0) for stat in daily_stats]
+    expense_data = [float(stat['expense'] or 0) for stat in daily_stats]
+    
+    category_labels = [stat['name'] for stat in category_stats[:8]]
+    category_data = [float(stat['total']) for stat in category_stats[:8]]
+    category_colors = ['#6c63ff', '#ff6584', '#00d4ff', '#ff4757', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff']
+    
+    cashbox_labels = [stat['name'] for stat in cashbox_stats]
+    cashbox_income = [float(stat['income']) for stat in cashbox_stats]
+    cashbox_expense = [float(stat['expense']) for stat in cashbox_stats]
+    
     content = navbar + sidebar + f'''
-    <div class="main-content">
+    <div class="main-content" style="background: transparent;">
         <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="fas fa-chart-bar"></i> التقارير</h2>
-                <span class="text-muted">تقرير شهر {today.strftime('%B %Y')}</span>
+            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
+                <h2 style="color: white;">
+                    <i class="fas fa-chart-line"></i> التقارير والإحصائيات المتقدمة
+                </h2>
+                <div class="btn-group">
+                    <button class="btn btn-light btn-sm">
+                        <i class="fas fa-calendar"></i> {today.strftime('%B %Y')}
+                    </button>
+                    <button class="btn btn-success btn-sm">
+                        <i class="fas fa-file-excel"></i> تصدير Excel
+                    </button>
+                    <button class="btn btn-danger btn-sm">
+                        <i class="fas fa-file-pdf"></i> تصدير PDF
+                    </button>
+                </div>
             </div>
             
             <!-- ملخص الشهر -->
             <div class="row mb-4">
-                <div class="col-md-4">
+                <div class="col-md-3" data-aos="zoom-in" data-aos-delay="100">
                     <div class="stat-card success">
-                        <i class="fas fa-arrow-down stat-icon"></i>
+                        <i class="fas fa-arrow-circle-down stat-icon"></i>
                         <div class="stat-value">{month_stats['income'] or 0:,.2f}</div>
                         <div class="stat-label">إجمالي الإيرادات</div>
+                        <div class="progress mt-3" style="height: 5px;">
+                            <div class="progress-bar bg-white" style="width: 75%"></div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-4">
+                <div class="col-md-3" data-aos="zoom-in" data-aos-delay="200">
                     <div class="stat-card danger">
-                        <i class="fas fa-arrow-up stat-icon"></i>
+                        <i class="fas fa-arrow-circle-up stat-icon"></i>
                         <div class="stat-value">{month_stats['expense'] or 0:,.2f}</div>
                         <div class="stat-label">إجمالي المصروفات</div>
+                        <div class="progress mt-3" style="height: 5px;">
+                            <div class="progress-bar bg-white" style="width: 60%"></div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-4">
+                <div class="col-md-3" data-aos="zoom-in" data-aos-delay="300">
                     <div class="stat-card primary">
-                        <i class="fas fa-balance-scale stat-icon"></i>
+                        <i class="fas fa-balance-scale-right stat-icon"></i>
                         <div class="stat-value">{(month_stats['income'] or 0) - (month_stats['expense'] or 0):,.2f}</div>
-                        <div class="stat-label">صافي الشهر</div>
+                        <div class="stat-label">صافي الربح</div>
+                        <div class="progress mt-3" style="height: 5px;">
+                            <div class="progress-bar bg-white" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="stat-card warning">
+                        <i class="fas fa-chart-pie stat-icon"></i>
+                        <div class="stat-value">{month_stats['count'] or 0}</div>
+                        <div class="stat-label">إجمالي المعاملات</div>
+                        <div class="progress mt-3" style="height: 5px;">
+                            <div class="progress-bar bg-dark" style="width: 90%"></div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <!-- تقرير التصنيفات -->
+            <!-- الرسوم البيانية -->
             <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="data-table">
-                        <div class="table-header">
-                            <h3><i class="fas fa-tags"></i> حسب التصنيف</h3>
+                <!-- رسم بياني خطي للحركة اليومية -->
+                <div class="col-md-8" data-aos="fade-right">
+                    <div class="chart-container" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;">
+                        <h4 style="color: white; margin-bottom: 20px;">
+                            <i class="fas fa-chart-line"></i> الحركة اليومية للشهر
+                        </h4>
+                        <canvas id="dailyChart" style="max-height: 400px;"></canvas>
+                    </div>
+                </div>
+                
+                <!-- رسم بياني دائري للتصنيفات -->
+                <div class="col-md-4" data-aos="fade-left">
+                    <div class="chart-container" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;">
+                        <h4 style="color: white; margin-bottom: 20px;">
+                            <i class="fas fa-chart-pie"></i> توزيع التصنيفات
+                        </h4>
+                        <canvas id="categoryChart" style="max-height: 350px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- رسم بياني للخزائن -->
+            <div class="row mb-4">
+                <div class="col-md-12" data-aos="fade-up">
+                    <div class="chart-container" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;">
+                        <h4 style="color: white; margin-bottom: 20px;">
+                            <i class="fas fa-cash-register"></i> أداء الخزائن
+                        </h4>
+                        <canvas id="cashboxChart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- جداول التفاصيل -->
+            <div class="row mb-4">
+                <div class="col-md-6" data-aos="fade-right">
+                    <div class="data-table" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px;">
+                        <div class="table-header" style="background: var(--primary-gradient); border-radius: 20px 20px 0 0;">
+                            <h3><i class="fas fa-tags"></i> أعلى التصنيفات</h3>
                         </div>
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table" style="color: white;">
                                 <thead>
                                     <tr>
-                                        <th>التصنيف</th>
-                                        <th>النوع</th>
-                                        <th>المبلغ</th>
+                                        <th style="color: rgba(255,255,255,0.7);">التصنيف</th>
+                                        <th style="color: rgba(255,255,255,0.7);">النوع</th>
+                                        <th style="color: rgba(255,255,255,0.7);">المبلغ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
     '''
     
-    for cat in category_stats[:10]:
+    for cat in category_stats[:6]:
         kind_badge = {
-            'income': '<span class="badge bg-success">إيراد</span>',
-            'expense': '<span class="badge bg-danger">مصروف</span>',
-            'transfer': '<span class="badge bg-info">تحويل</span>'
+            'income': '<span class="badge" style="background: var(--success-gradient);">إيراد</span>',
+            'expense': '<span class="badge" style="background: var(--danger-gradient);">مصروف</span>',
+            'transfer': '<span class="badge" style="background: var(--info-color);">تحويل</span>'
         }.get(cat['kind'], '')
         
         content += f'''
-                                    <tr>
-                                        <td>{cat['name']}</td>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <td style="color: white;">{cat['name']}</td>
                                         <td>{kind_badge}</td>
-                                        <td><strong>{cat['total']:,.2f}</strong></td>
+                                        <td style="color: #00d4ff; font-weight: bold;">{cat['total']:,.2f}</td>
                                     </tr>
         '''
     
@@ -2530,25 +2717,25 @@ def reports():
                     </div>
                 </div>
                 
-                <div class="col-md-6">
-                    <div class="data-table">
-                        <div class="table-header">
-                            <h3><i class="fas fa-users"></i> حسب الشريك</h3>
+                <div class="col-md-6" data-aos="fade-left">
+                    <div class="data-table" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px;">
+                        <div class="table-header" style="background: var(--secondary-gradient); border-radius: 20px 20px 0 0;">
+                            <h3><i class="fas fa-users"></i> أفضل الشركاء</h3>
                         </div>
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table" style="color: white;">
                                 <thead>
                                     <tr>
-                                        <th>الشريك</th>
-                                        <th>النوع</th>
-                                        <th>المبلغ</th>
-                                        <th>العمليات</th>
+                                        <th style="color: rgba(255,255,255,0.7);">الشريك</th>
+                                        <th style="color: rgba(255,255,255,0.7);">النوع</th>
+                                        <th style="color: rgba(255,255,255,0.7);">المبلغ</th>
+                                        <th style="color: rgba(255,255,255,0.7);">العمليات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
     '''
     
-    for partner in partner_stats:
+    for partner in partner_stats[:6]:
         kind_badge = {
             'customer': '<span class="badge bg-info">عميل</span>',
             'supplier': '<span class="badge bg-warning">مورد</span>',
@@ -2556,15 +2743,15 @@ def reports():
         }.get(partner['kind'], '')
         
         content += f'''
-                                    <tr>
-                                        <td>{partner['name']}</td>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <td style="color: white;">{partner['name']}</td>
                                         <td>{kind_badge}</td>
-                                        <td><strong>{partner['total']:,.2f}</strong></td>
-                                        <td>{partner['count']}</td>
+                                        <td style="color: #feca57; font-weight: bold;">{partner['total']:,.2f}</td>
+                                        <td><span class="badge bg-dark">{partner['count']}</span></td>
                                     </tr>
         '''
     
-    content += '''
+    content += f'''
                                 </tbody>
                             </table>
                         </div>
@@ -2573,6 +2760,209 @@ def reports():
             </div>
         </div>
     </div>
+    
+    <script>
+    // تفعيل AOS
+    AOS.init({{
+        duration: 1000,
+        once: true
+    }});
+    
+    // الرسم البياني الخطي للحركة اليومية
+    const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+    new Chart(dailyCtx, {{
+        type: 'line',
+        data: {{
+            labels: {dates_labels},
+            datasets: [{{
+                label: 'الإيرادات',
+                data: {income_data},
+                borderColor: '#00d4ff',
+                backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            }}, {{
+                label: 'المصروفات',
+                data: {expense_data},
+                borderColor: '#ff4757',
+                backgroundColor: 'rgba(255, 71, 87, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            }}]
+        }},
+        options: {{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {{
+                legend: {{
+                    labels: {{
+                        color: 'white',
+                        font: {{
+                            size: 14,
+                            family: 'Cairo'
+                        }}
+                    }}
+                }},
+                tooltip: {{
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {{
+                        size: 14,
+                        family: 'Cairo'
+                    }},
+                    bodyFont: {{
+                        size: 13,
+                        family: 'Cairo'
+                    }}
+                }}
+            }},
+            scales: {{
+                y: {{
+                    grid: {{
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }},
+                    ticks: {{
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        font: {{
+                            size: 12,
+                            family: 'Cairo'
+                        }}
+                    }}
+                }},
+                x: {{
+                    grid: {{
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }},
+                    ticks: {{
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        font: {{
+                            size: 11,
+                            family: 'Cairo'
+                        }}
+                    }}
+                }}
+            }}
+        }}
+    }});
+    
+    // الرسم البياني الدائري للتصنيفات
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {{
+        type: 'doughnut',
+        data: {{
+            labels: {category_labels},
+            datasets: [{{
+                data: {category_data},
+                backgroundColor: {category_colors},
+                borderWidth: 2,
+                borderColor: 'rgba(255, 255, 255, 0.1)'
+            }}]
+        }},
+        options: {{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {{
+                legend: {{
+                    position: 'bottom',
+                    labels: {{
+                        color: 'white',
+                        padding: 15,
+                        font: {{
+                            size: 12,
+                            family: 'Cairo'
+                        }}
+                    }}
+                }},
+                tooltip: {{
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {{
+                        size: 14,
+                        family: 'Cairo'
+                    }},
+                    bodyFont: {{
+                        size: 13,
+                        family: 'Cairo'
+                    }}
+                }}
+            }}
+        }}
+    }});
+    
+    // الرسم البياني للخزائن
+    const cashboxCtx = document.getElementById('cashboxChart').getContext('2d');
+    new Chart(cashboxCtx, {{
+        type: 'bar',
+        data: {{
+            labels: {cashbox_labels},
+            datasets: [{{
+                label: 'الإيرادات',
+                data: {cashbox_income},
+                backgroundColor: 'rgba(0, 212, 255, 0.8)',
+                borderColor: '#00d4ff',
+                borderWidth: 2
+            }}, {{
+                label: 'المصروفات',
+                data: {cashbox_expense},
+                backgroundColor: 'rgba(255, 71, 87, 0.8)',
+                borderColor: '#ff4757',
+                borderWidth: 2
+            }}]
+        }},
+        options: {{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {{
+                legend: {{
+                    labels: {{
+                        color: 'white',
+                        font: {{
+                            size: 14,
+                            family: 'Cairo'
+                        }}
+                    }}
+                }},
+                tooltip: {{
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {{
+                        size: 14,
+                        family: 'Cairo'
+                    }},
+                    bodyFont: {{
+                        size: 13,
+                        family: 'Cairo'
+                    }}
+                }}
+            }},
+            scales: {{
+                y: {{
+                    grid: {{
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }},
+                    ticks: {{
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        font: {{
+                            size: 12,
+                            family: 'Cairo'
+                        }}
+                    }}
+                }},
+                x: {{
+                    grid: {{
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }},
+                    ticks: {{
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        font: {{
+                            size: 12,
+                            family: 'Cairo'
+                        }}
+                    }}
+                }}
+            }}
+        }}
+    }});
+    </script>
     '''
     
     return render_template_string(MAIN_TEMPLATE, content=content, title='التقارير')
