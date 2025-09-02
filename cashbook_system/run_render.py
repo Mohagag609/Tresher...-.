@@ -162,7 +162,7 @@ def login():
         def hidden_tag(self):
             return ''
     
-    return render_template('auth/login.html', form=SimpleForm())
+    return render_template('auth/login_simple.html')
 
 @app.route('/auth/logout')
 @login_required
