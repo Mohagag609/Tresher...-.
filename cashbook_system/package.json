@@ -1,0 +1,11 @@
+{
+  "name": "cashbook-system",
+  "version": "1.0.0",
+  "description": "Cash Management System",
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "build": "echo 'No Node.js build required'"
+  }
+}

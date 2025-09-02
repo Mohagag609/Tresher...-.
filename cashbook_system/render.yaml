@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: cashbook-system
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn run:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_APP
+        value: run.py
+      - key: DATABASE_URL
+        value: sqlite:///instance/cashbook.db
+    autoDeploy: false
