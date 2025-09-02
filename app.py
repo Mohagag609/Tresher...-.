@@ -407,23 +407,15 @@ MAIN_TEMPLATE = '''
     
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --danger-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-            --warning-gradient: linear-gradient(135deg, #fddb92 0%, #d1fdff 100%);
-            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            --primary-color: #6c63ff;
-            --secondary-color: #ff6584;
-            --success-color: #00d4ff;
-            --danger-color: #ff4757;
-            --warning-color: #feca57;
-            --info-color: #48dbfb;
-            --dark-color: #0a0e27;
-            --light-color: #ffffff;
-            --sidebar-width: 280px;
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --primary-color: #5e72e4;
+            --secondary-color: #2dce89;
+            --success-color: #2dce89;
+            --danger-color: #f5365c;
+            --warning-color: #fb6340;
+            --info-color: #11cdef;
+            --dark-color: #172b4d;
+            --light-color: #f4f5f7;
+            --sidebar-width: 260px;
         }
         
         * {
@@ -434,25 +426,9 @@ MAIN_TEMPLATE = '''
         
         body {
             font-family: 'Cairo', sans-serif;
-            background: #0f0c29;
-            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            background: #f4f5f7;
             min-height: 100vh;
-            position: relative;
             overflow-x: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(255, 219, 112, 0.2) 0%, transparent 50%);
-            z-index: -1;
         }
         
         /* Scrollbar */
@@ -480,35 +456,17 @@ MAIN_TEMPLATE = '''
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
             position: relative;
-            overflow: hidden;
-        }
-        
-        .login-page::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,112C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat;
-            animation: wave 10s linear infinite;
-        }
-        
-        @keyframes wave {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
         }
         
         .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
             padding: 40px;
             width: 100%;
             max-width: 450px;
-            position: relative;
-            z-index: 1;
         }
         
         .login-header {
@@ -530,24 +488,16 @@ MAIN_TEMPLATE = '''
         
         /* Navbar */
         .main-navbar {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             padding: 1rem 0;
-            transition: all 0.3s ease;
-        }
-        
-        .main-navbar:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-bottom-color: rgba(255, 255, 255, 0.3);
+            border-bottom: 1px solid #e9ecef;
         }
         
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
-            color: white !important;
+            color: var(--dark-color) !important;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -555,13 +505,14 @@ MAIN_TEMPLATE = '''
         
         .navbar-brand i {
             font-size: 1.8rem;
+            color: var(--primary-color);
         }
         
         .user-menu {
             display: flex;
             align-items: center;
             gap: 20px;
-            color: white;
+            color: var(--dark-color);
         }
         
         .user-avatar {
@@ -579,20 +530,16 @@ MAIN_TEMPLATE = '''
         /* Sidebar */
         .sidebar {
             position: fixed;
-            top: 85px;
+            top: 70px;
             right: 0;
             width: var(--sidebar-width);
-            height: calc(100vh - 85px);
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-left: 1px solid var(--glass-border);
-            box-shadow: 
-                -8px 0 32px 0 rgba(31, 38, 135, 0.2),
-                inset 0 0 20px rgba(255, 255, 255, 0.02);
+            height: calc(100vh - 70px);
+            background: white;
+            box-shadow: -1px 0 3px rgba(0, 0, 0, 0.05);
             overflow-y: auto;
             transition: all 0.3s ease;
             z-index: 100;
+            border-left: 1px solid #e9ecef;
         }
         
         .sidebar-menu {
@@ -608,20 +555,20 @@ MAIN_TEMPLATE = '''
             align-items: center;
             gap: 15px;
             padding: 15px 25px;
-            color: rgba(255, 255, 255, 0.7);
+            color: #525f7f;
             text-decoration: none;
             transition: all 0.3s ease;
             position: relative;
         }
         
         .sidebar-link:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+            background: #f6f9fc;
         }
         
         .sidebar-link.active {
-            color: white;
-            background: var(--primary-color);
+            color: var(--primary-color);
+            background: #f6f9fc;
         }
         
         .sidebar-link.active::before {
@@ -631,7 +578,7 @@ MAIN_TEMPLATE = '''
             top: 0;
             width: 4px;
             height: 100%;
-            background: var(--success-color);
+            background: var(--primary-color);
         }
         
         .sidebar-link i {
@@ -649,68 +596,45 @@ MAIN_TEMPLATE = '''
             margin-top: 70px;
         }
         
-        /* Glass Cards */
+        /* Cards */
         .stat-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 
-                0 8px 32px 0 rgba(31, 38, 135, 0.37),
-                inset 0 0 20px rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
         
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            transform: rotate(45deg);
-            transition: all 0.5s ease;
-        }
-        
         .stat-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 
-                0 15px 40px 0 rgba(31, 38, 135, 0.5),
-                inset 0 0 30px rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        .stat-card:hover::before {
-            transform: rotate(45deg) translateY(20px);
+            transform: translateY(-5px);
+            box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.1);
         }
         
         .stat-card.primary {
-            background: var(--primary-gradient);
-            border: 1px solid rgba(108, 99, 255, 0.3);
+            background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
             color: white;
         }
         
         .stat-card.success {
-            background: var(--success-gradient);
-            border: 1px solid rgba(0, 212, 255, 0.3);
+            background: linear-gradient(87deg, #2dce89 0, #2dcecc 100%);
             color: white;
         }
         
         .stat-card.danger {
-            background: var(--danger-gradient);
-            border: 1px solid rgba(255, 71, 87, 0.3);
+            background: linear-gradient(87deg, #f5365c 0, #f56036 100%);
             color: white;
         }
         
         .stat-card.warning {
-            background: var(--warning-gradient);
-            border: 1px solid rgba(254, 202, 87, 0.3);
-            color: #333;
+            background: linear-gradient(87deg, #fb6340 0, #fbb140 100%);
+            color: white;
+        }
+        
+        .stat-card.info {
+            background: linear-gradient(87deg, #11cdef 0, #1171ef 100%);
+            color: white;
         }
         
         .stat-icon {
@@ -736,14 +660,14 @@ MAIN_TEMPLATE = '''
         /* Tables */
         .data-table {
             background: white;
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
         }
         
         .table-header {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: white;
+            background: #f6f9fc;
+            border-bottom: 1px solid #e9ecef;
             padding: 20px;
             display: flex;
             justify-content: space-between;
@@ -1171,86 +1095,74 @@ def dashboard():
     '''
     
     content = navbar + sidebar + f'''
-    <div class="main-content" style="background: transparent;">
+    <div class="main-content">
         <div class="container-fluid">
             <!-- العنوان -->
-            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
-                <h2 style="color: white;">
-                    <i class="fas fa-tachometer-alt"></i> لوحة التحكم الرئيسية
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-tachometer-alt text-primary"></i> لوحة التحكم
                 </h2>
                 <div>
-                    <a href="/transactions/new" class="btn btn-primary btn-modern" style="background: var(--primary-gradient); border: none;">
+                    <a href="/transactions/new" class="btn btn-primary">
                         <i class="fas fa-plus"></i> معاملة جديدة
                     </a>
-                    <a href="/transfers/new" class="btn btn-success btn-modern" style="background: var(--success-gradient); border: none;">
-                        <i class="fas fa-exchange-alt"></i> تحويل بين الخزائن
+                    <a href="/transfers/new" class="btn btn-success">
+                        <i class="fas fa-exchange-alt"></i> تحويل
                     </a>
                 </div>
             </div>
             
             <!-- الإحصائيات -->
             <div class="row mb-4">
-                <div class="col-md-3 mb-3" data-aos="zoom-in" data-aos-delay="100">
+                <div class="col-md-3 mb-3">
                     <div class="stat-card primary">
                         <i class="fas fa-wallet stat-icon"></i>
                         <div class="stat-value">{total_balance:,.2f}</div>
                         <div class="stat-label">إجمالي الأرصدة</div>
-                        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.2);">
-                            <div class="progress-bar" style="width: 100%; background: white;"></div>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3 mb-3" data-aos="zoom-in" data-aos-delay="200">
+                <div class="col-md-3 mb-3">
                     <div class="stat-card success">
                         <i class="fas fa-arrow-circle-down stat-icon"></i>
                         <div class="stat-value">{today_stats['income'] or 0:,.2f}</div>
                         <div class="stat-label">مقبوضات اليوم</div>
-                        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.2);">
-                            <div class="progress-bar" style="width: 75%; background: white;"></div>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3 mb-3" data-aos="zoom-in" data-aos-delay="300">
+                <div class="col-md-3 mb-3">
                     <div class="stat-card danger">
                         <i class="fas fa-arrow-circle-up stat-icon"></i>
                         <div class="stat-value">{today_stats['expense'] or 0:,.2f}</div>
                         <div class="stat-label">مدفوعات اليوم</div>
-                        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.2);">
-                            <div class="progress-bar" style="width: 60%; background: white;"></div>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3 mb-3" data-aos="zoom-in" data-aos-delay="400">
+                <div class="col-md-3 mb-3">
                     <div class="stat-card warning">
                         <i class="fas fa-hourglass-half stat-icon"></i>
                         <div class="stat-value">{pending_count}</div>
                         <div class="stat-label">معاملات معلقة</div>
-                        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.2);">
-                            <div class="progress-bar" style="width: 30%; background: #333;"></div>
-                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- أرصدة الخزائن -->
             <div class="row mb-4">
-                <div class="col-12" data-aos="fade-up">
-                    <div class="data-table" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px;">
-                        <div class="table-header" style="background: var(--primary-gradient); border-radius: 20px 20px 0 0;">
-                            <h3><i class="fas fa-cash-register"></i> أرصدة الخزائن</h3>
+                <div class="col-12">
+                    <div class="data-table">
+                        <div class="table-header">
+                            <h3><i class="fas fa-cash-register text-primary"></i> أرصدة الخزائن</h3>
                         </div>
                         <div class="table-responsive">
-                            <table class="table" style="color: white;">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="color: rgba(255,255,255,0.7);">الكود</th>
-                                        <th style="color: rgba(255,255,255,0.7);">اسم الخزنة</th>
-                                        <th style="color: rgba(255,255,255,0.7);">العملة</th>
-                                        <th style="color: rgba(255,255,255,0.7);">الرصيد الحالي</th>
-                                        <th style="color: rgba(255,255,255,0.7);">الحالة</th>
+                                        <th>الكود</th>
+                                        <th>اسم الخزنة</th>
+                                        <th>العملة</th>
+                                        <th>الرصيد الحالي</th>
+                                        <th>الحالة</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1258,12 +1170,12 @@ def dashboard():
     
     for box in cashboxes:
         content += f'''
-                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                        <td><strong style="color: #feca57;">{box['code']}</strong></td>
-                                        <td style="color: white;">{box['name']}</td>
+                                    <tr>
+                                        <td><strong>{box['code']}</strong></td>
+                                        <td>{box['name']}</td>
                                         <td><span class="badge bg-info">{box['currency']}</span></td>
-                                        <td><strong style="color: #00d4ff; font-size: 1.1rem;">{box['balance']:,.2f}</strong></td>
-                                        <td><span class="badge" style="background: var(--success-gradient);">نشط</span></td>
+                                        <td><strong class="text-primary">{box['balance']:,.2f}</strong></td>
+                                        <td><span class="badge bg-success">نشط</span></td>
                                     </tr>
         '''
     
@@ -1277,22 +1189,22 @@ def dashboard():
             
             <!-- آخر المعاملات -->
             <div class="row">
-                <div class="col-12" data-aos="fade-up" data-aos-delay="100">
-                    <div class="data-table" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px;">
-                        <div class="table-header" style="background: var(--secondary-gradient); border-radius: 20px 20px 0 0;">
-                            <h3><i class="fas fa-history"></i> آخر المعاملات</h3>
-                            <a href="/transactions" class="btn btn-light btn-sm">عرض الكل</a>
+                <div class="col-12">
+                    <div class="data-table">
+                        <div class="table-header">
+                            <h3><i class="fas fa-history text-info"></i> آخر المعاملات</h3>
+                            <a href="/transactions" class="btn btn-outline-primary btn-sm">عرض الكل</a>
                         </div>
                         <div class="table-responsive">
-                            <table class="table" style="color: white;">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="color: rgba(255,255,255,0.7);">رقم السند</th>
-                                        <th style="color: rgba(255,255,255,0.7);">التاريخ</th>
-                                        <th style="color: rgba(255,255,255,0.7);">النوع</th>
-                                        <th style="color: rgba(255,255,255,0.7);">الخزنة</th>
-                                        <th style="color: rgba(255,255,255,0.7);">المبلغ</th>
-                                        <th style="color: rgba(255,255,255,0.7);">الحالة</th>
+                                        <th>رقم السند</th>
+                                        <th>التاريخ</th>
+                                        <th>النوع</th>
+                                        <th>الخزنة</th>
+                                        <th>المبلغ</th>
+                                        <th>الحالة</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1313,12 +1225,12 @@ def dashboard():
         }.get(txn['status'], '')
         
         content += f'''
-                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                        <td><strong style="color: #feca57;">{txn['voucher_no'] or '-'}</strong></td>
-                                        <td style="color: rgba(255,255,255,0.8);">{txn['date']}</td>
+                                    <tr>
+                                        <td><strong>{txn['voucher_no'] or '-'}</strong></td>
+                                        <td>{txn['date']}</td>
                                         <td>{type_badge}</td>
-                                        <td style="color: white;">{txn['cashbox_name']}</td>
-                                        <td><strong style="color: #00d4ff;">{txn['amount']:,.2f}</strong></td>
+                                        <td>{txn['cashbox_name']}</td>
+                                        <td><strong class="text-info">{txn['amount']:,.2f}</strong></td>
                                         <td>{status_badge}</td>
                                     </tr>
         '''
@@ -1332,15 +1244,6 @@ def dashboard():
             </div>
         </div>
     </div>
-    
-    <script>
-    // تفعيل AOS
-    AOS.init({
-        duration: 1000,
-        once: true,
-        easing: 'ease-out-cubic'
-    });
-    </script>
     '''
     
     return render_template_string(MAIN_TEMPLATE, content=content, title='لوحة التحكم')
@@ -2575,68 +2478,56 @@ def reports():
     cashbox_expense = [float(stat['expense']) for stat in cashbox_stats]
     
     content = navbar + sidebar + f'''
-    <div class="main-content" style="background: transparent;">
+    <div class="main-content">
         <div class="container-fluid">
-            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
-                <h2 style="color: white;">
-                    <i class="fas fa-chart-line"></i> التقارير والإحصائيات المتقدمة
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-chart-line text-primary"></i> التقارير والإحصائيات
                 </h2>
                 <div class="btn-group">
-                    <button class="btn btn-light btn-sm">
+                    <button class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-calendar"></i> {today.strftime('%B %Y')}
                     </button>
                     <button class="btn btn-success btn-sm">
-                        <i class="fas fa-file-excel"></i> تصدير Excel
+                        <i class="fas fa-file-excel"></i> Excel
                     </button>
                     <button class="btn btn-danger btn-sm">
-                        <i class="fas fa-file-pdf"></i> تصدير PDF
+                        <i class="fas fa-file-pdf"></i> PDF
                     </button>
                 </div>
             </div>
             
             <!-- ملخص الشهر -->
             <div class="row mb-4">
-                <div class="col-md-3" data-aos="zoom-in" data-aos-delay="100">
+                <div class="col-md-3">
                     <div class="stat-card success">
                         <i class="fas fa-arrow-circle-down stat-icon"></i>
                         <div class="stat-value">{month_stats['income'] or 0:,.2f}</div>
                         <div class="stat-label">إجمالي الإيرادات</div>
-                        <div class="progress mt-3" style="height: 5px;">
-                            <div class="progress-bar bg-white" style="width: 75%"></div>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3" data-aos="zoom-in" data-aos-delay="200">
+                <div class="col-md-3">
                     <div class="stat-card danger">
                         <i class="fas fa-arrow-circle-up stat-icon"></i>
                         <div class="stat-value">{month_stats['expense'] or 0:,.2f}</div>
                         <div class="stat-label">إجمالي المصروفات</div>
-                        <div class="progress mt-3" style="height: 5px;">
-                            <div class="progress-bar bg-white" style="width: 60%"></div>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3" data-aos="zoom-in" data-aos-delay="300">
+                <div class="col-md-3">
                     <div class="stat-card primary">
-                        <i class="fas fa-balance-scale-right stat-icon"></i>
+                        <i class="fas fa-balance-scale stat-icon"></i>
                         <div class="stat-value">{(month_stats['income'] or 0) - (month_stats['expense'] or 0):,.2f}</div>
                         <div class="stat-label">صافي الربح</div>
-                        <div class="progress mt-3" style="height: 5px;">
-                            <div class="progress-bar bg-white" style="width: 85%"></div>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="col-md-3" data-aos="zoom-in" data-aos-delay="400">
-                    <div class="stat-card warning">
+                <div class="col-md-3">
+                    <div class="stat-card info">
                         <i class="fas fa-chart-pie stat-icon"></i>
                         <div class="stat-value">{month_stats['count'] or 0}</div>
                         <div class="stat-label">إجمالي المعاملات</div>
-                        <div class="progress mt-3" style="height: 5px;">
-                            <div class="progress-bar bg-dark" style="width: 90%"></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -2644,52 +2535,64 @@ def reports():
             <!-- الرسوم البيانية -->
             <div class="row mb-4">
                 <!-- رسم بياني خطي للحركة اليومية -->
-                <div class="col-md-8" data-aos="fade-right">
-                    <div class="chart-container" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;">
-                        <h4 style="color: white; margin-bottom: 20px;">
-                            <i class="fas fa-chart-line"></i> الحركة اليومية للشهر
-                        </h4>
-                        <canvas id="dailyChart" style="max-height: 400px;"></canvas>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-line text-primary"></i> الحركة اليومية للشهر
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="dailyChart" height="100"></canvas>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- رسم بياني دائري للتصنيفات -->
-                <div class="col-md-4" data-aos="fade-left">
-                    <div class="chart-container" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;">
-                        <h4 style="color: white; margin-bottom: 20px;">
-                            <i class="fas fa-chart-pie"></i> توزيع التصنيفات
-                        </h4>
-                        <canvas id="categoryChart" style="max-height: 350px;"></canvas>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-pie text-info"></i> توزيع التصنيفات
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="categoryChart" height="200"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- رسم بياني للخزائن -->
             <div class="row mb-4">
-                <div class="col-md-12" data-aos="fade-up">
-                    <div class="chart-container" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;">
-                        <h4 style="color: white; margin-bottom: 20px;">
-                            <i class="fas fa-cash-register"></i> أداء الخزائن
-                        </h4>
-                        <canvas id="cashboxChart" style="max-height: 300px;"></canvas>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-cash-register text-success"></i> أداء الخزائن
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="cashboxChart" height="80"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- جداول التفاصيل -->
             <div class="row mb-4">
-                <div class="col-md-6" data-aos="fade-right">
-                    <div class="data-table" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px;">
-                        <div class="table-header" style="background: var(--primary-gradient); border-radius: 20px 20px 0 0;">
-                            <h3><i class="fas fa-tags"></i> أعلى التصنيفات</h3>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-tags text-warning"></i> أعلى التصنيفات</h5>
                         </div>
                         <div class="table-responsive">
-                            <table class="table" style="color: white;">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="color: rgba(255,255,255,0.7);">التصنيف</th>
-                                        <th style="color: rgba(255,255,255,0.7);">النوع</th>
-                                        <th style="color: rgba(255,255,255,0.7);">المبلغ</th>
+                                        <th>التصنيف</th>
+                                        <th>النوع</th>
+                                        <th>المبلغ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -2697,16 +2600,16 @@ def reports():
     
     for cat in category_stats[:6]:
         kind_badge = {
-            'income': '<span class="badge" style="background: var(--success-gradient);">إيراد</span>',
-            'expense': '<span class="badge" style="background: var(--danger-gradient);">مصروف</span>',
-            'transfer': '<span class="badge" style="background: var(--info-color);">تحويل</span>'
+            'income': '<span class="badge bg-success">إيراد</span>',
+            'expense': '<span class="badge bg-danger">مصروف</span>',
+            'transfer': '<span class="badge bg-info">تحويل</span>'
         }.get(cat['kind'], '')
         
         content += f'''
-                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                        <td style="color: white;">{cat['name']}</td>
+                                    <tr>
+                                        <td>{cat['name']}</td>
                                         <td>{kind_badge}</td>
-                                        <td style="color: #00d4ff; font-weight: bold;">{cat['total']:,.2f}</td>
+                                        <td class="text-primary font-weight-bold">{cat['total']:,.2f}</td>
                                     </tr>
         '''
     
@@ -2717,19 +2620,19 @@ def reports():
                     </div>
                 </div>
                 
-                <div class="col-md-6" data-aos="fade-left">
-                    <div class="data-table" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px;">
-                        <div class="table-header" style="background: var(--secondary-gradient); border-radius: 20px 20px 0 0;">
-                            <h3><i class="fas fa-users"></i> أفضل الشركاء</h3>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-users text-danger"></i> أفضل الشركاء</h5>
                         </div>
                         <div class="table-responsive">
-                            <table class="table" style="color: white;">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th style="color: rgba(255,255,255,0.7);">الشريك</th>
-                                        <th style="color: rgba(255,255,255,0.7);">النوع</th>
-                                        <th style="color: rgba(255,255,255,0.7);">المبلغ</th>
-                                        <th style="color: rgba(255,255,255,0.7);">العمليات</th>
+                                        <th>الشريك</th>
+                                        <th>النوع</th>
+                                        <th>المبلغ</th>
+                                        <th>العمليات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -2743,11 +2646,11 @@ def reports():
         }.get(partner['kind'], '')
         
         content += f'''
-                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                        <td style="color: white;">{partner['name']}</td>
+                                    <tr>
+                                        <td>{partner['name']}</td>
                                         <td>{kind_badge}</td>
-                                        <td style="color: #feca57; font-weight: bold;">{partner['total']:,.2f}</td>
-                                        <td><span class="badge bg-dark">{partner['count']}</span></td>
+                                        <td class="text-success font-weight-bold">{partner['total']:,.2f}</td>
+                                        <td><span class="badge bg-secondary">{partner['count']}</span></td>
                                     </tr>
         '''
     
@@ -2762,206 +2665,130 @@ def reports():
     </div>
     
     <script>
-    // تفعيل AOS
-    AOS.init({{
-        duration: 1000,
-        once: true
-    }});
-    
     // الرسم البياني الخطي للحركة اليومية
-    const dailyCtx = document.getElementById('dailyChart').getContext('2d');
-    new Chart(dailyCtx, {{
-        type: 'line',
-        data: {{
-            labels: {dates_labels},
-            datasets: [{{
-                label: 'الإيرادات',
-                data: {income_data},
-                borderColor: '#00d4ff',
-                backgroundColor: 'rgba(0, 212, 255, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true
-            }}, {{
-                label: 'المصروفات',
-                data: {expense_data},
-                borderColor: '#ff4757',
-                backgroundColor: 'rgba(255, 71, 87, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true
-            }}]
-        }},
-        options: {{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {{
-                legend: {{
-                    labels: {{
-                        color: 'white',
-                        font: {{
-                            size: 14,
-                            family: 'Cairo'
-                        }}
-                    }}
-                }},
-                tooltip: {{
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    titleFont: {{
-                        size: 14,
-                        family: 'Cairo'
-                    }},
-                    bodyFont: {{
-                        size: 13,
-                        family: 'Cairo'
-                    }}
-                }}
+    const dailyCtx = document.getElementById('dailyChart');
+    if (dailyCtx) {{
+        new Chart(dailyCtx.getContext('2d'), {{
+            type: 'line',
+            data: {{
+                labels: {dates_labels},
+                datasets: [{{
+                    label: 'الإيرادات',
+                    data: {income_data},
+                    borderColor: '#2dce89',
+                    backgroundColor: 'rgba(45, 206, 137, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }}, {{
+                    label: 'المصروفات',
+                    data: {expense_data},
+                    borderColor: '#f5365c',
+                    backgroundColor: 'rgba(245, 54, 92, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }}]
             }},
-            scales: {{
-                y: {{
-                    grid: {{
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }},
-                    ticks: {{
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        font: {{
-                            size: 12,
-                            family: 'Cairo'
-                        }}
+            options: {{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {{
+                    legend: {{
+                        display: true,
+                        position: 'bottom'
                     }}
                 }},
-                x: {{
-                    grid: {{
-                        color: 'rgba(255, 255, 255, 0.1)'
+                scales: {{
+                    y: {{
+                        beginAtZero: true,
+                        grid: {{
+                            borderDash: [2, 2]
+                        }}
                     }},
-                    ticks: {{
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        font: {{
-                            size: 11,
-                            family: 'Cairo'
+                    x: {{
+                        grid: {{
+                            display: false
                         }}
                     }}
                 }}
             }}
-        }}
-    }});
+        }});
+    }}
     
     // الرسم البياني الدائري للتصنيفات
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    new Chart(categoryCtx, {{
-        type: 'doughnut',
-        data: {{
-            labels: {category_labels},
-            datasets: [{{
-                data: {category_data},
-                backgroundColor: {category_colors},
-                borderWidth: 2,
-                borderColor: 'rgba(255, 255, 255, 0.1)'
-            }}]
-        }},
-        options: {{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {{
-                legend: {{
-                    position: 'bottom',
-                    labels: {{
-                        color: 'white',
-                        padding: 15,
-                        font: {{
-                            size: 12,
-                            family: 'Cairo'
+    const categoryCtx = document.getElementById('categoryChart');
+    if (categoryCtx) {{
+        new Chart(categoryCtx.getContext('2d'), {{
+            type: 'doughnut',
+            data: {{
+                labels: {category_labels},
+                datasets: [{{
+                    data: {category_data},
+                    backgroundColor: {category_colors},
+                    borderWidth: 0
+                }}]
+            }},
+            options: {{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {{
+                    legend: {{
+                        position: 'bottom',
+                        labels: {{
+                            padding: 15,
+                            font: {{
+                                size: 12
+                            }}
                         }}
-                    }}
-                }},
-                tooltip: {{
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    titleFont: {{
-                        size: 14,
-                        family: 'Cairo'
-                    }},
-                    bodyFont: {{
-                        size: 13,
-                        family: 'Cairo'
                     }}
                 }}
             }}
-        }}
-    }});
+        }});
+    }}
     
     // الرسم البياني للخزائن
-    const cashboxCtx = document.getElementById('cashboxChart').getContext('2d');
-    new Chart(cashboxCtx, {{
-        type: 'bar',
-        data: {{
-            labels: {cashbox_labels},
-            datasets: [{{
-                label: 'الإيرادات',
-                data: {cashbox_income},
-                backgroundColor: 'rgba(0, 212, 255, 0.8)',
-                borderColor: '#00d4ff',
-                borderWidth: 2
-            }}, {{
-                label: 'المصروفات',
-                data: {cashbox_expense},
-                backgroundColor: 'rgba(255, 71, 87, 0.8)',
-                borderColor: '#ff4757',
-                borderWidth: 2
-            }}]
-        }},
-        options: {{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {{
-                legend: {{
-                    labels: {{
-                        color: 'white',
-                        font: {{
-                            size: 14,
-                            family: 'Cairo'
-                        }}
-                    }}
-                }},
-                tooltip: {{
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    titleFont: {{
-                        size: 14,
-                        family: 'Cairo'
-                    }},
-                    bodyFont: {{
-                        size: 13,
-                        family: 'Cairo'
-                    }}
-                }}
+    const cashboxCtx = document.getElementById('cashboxChart');
+    if (cashboxCtx) {{
+        new Chart(cashboxCtx.getContext('2d'), {{
+            type: 'bar',
+            data: {{
+                labels: {cashbox_labels},
+                datasets: [{{
+                    label: 'الإيرادات',
+                    data: {cashbox_income},
+                    backgroundColor: '#2dce89',
+                    borderRadius: 5
+                }}, {{
+                    label: 'المصروفات',
+                    data: {cashbox_expense},
+                    backgroundColor: '#f5365c',
+                    borderRadius: 5
+                }}]
             }},
-            scales: {{
-                y: {{
-                    grid: {{
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }},
-                    ticks: {{
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        font: {{
-                            size: 12,
-                            family: 'Cairo'
-                        }}
+            options: {{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {{
+                    legend: {{
+                        display: true,
+                        position: 'top'
                     }}
                 }},
-                x: {{
-                    grid: {{
-                        color: 'rgba(255, 255, 255, 0.1)'
+                scales: {{
+                    y: {{
+                        beginAtZero: true,
+                        grid: {{
+                            borderDash: [2, 2]
+                        }}
                     }},
-                    ticks: {{
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        font: {{
-                            size: 12,
-                            family: 'Cairo'
+                    x: {{
+                        grid: {{
+                            display: false
                         }}
                     }}
                 }}
             }}
-        }}
-    }});
+        }});
+    }}
     </script>
     '''
     
