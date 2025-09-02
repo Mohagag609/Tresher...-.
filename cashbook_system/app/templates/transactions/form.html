@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - نظام الخزينة{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Page Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="flex items-center">
+            <a href="{{ url_for('transactions.index') }}" class="ml-4 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-arrow-right text-xl"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-file-invoice-dollar ml-2 text-indigo-600"></i>
+                    {{ title }}
+                </h1>
+                <p class="text-gray-600 mt-1">املأ البيانات المطلوبة لإنشاء السند</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Form -->
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {{ form.hidden_tag() }}
+        
+        <!-- Basic Information -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                <i class="fas fa-info-circle ml-2 text-indigo-600"></i>
+                المعلومات الأساسية
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Transaction Type -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.txn_type.label.text }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.txn_type(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent") }}
+                    {% if form.txn_type.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.txn_type.errors[0] }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Cashbox -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.cashbox_id.label.text }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.cashbox_id(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent") }}
+                    {% if form.cashbox_id.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.cashbox_id.errors[0] }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.date.label.text }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.date(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent") }}
+                    {% if form.date.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.date.errors[0] }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Amount -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.amount.label.text }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        {{ form.amount(class="w-full px-4 py-2 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent", placeholder="0.00") }}
+                        <span class="absolute right-3 top-2.5 text-gray-500">
+                            <i class="fas fa-pound-sign"></i>
+                        </span>
+                    </div>
+                    {% if form.amount.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.amount.errors[0] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Information -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                <i class="fas fa-link ml-2 text-indigo-600"></i>
+                معلومات إضافية
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Category -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.category_id.label.text }}
+                    </label>
+                    {{ form.category_id(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent") }}
+                </div>
+                
+                <!-- Partner -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.partner_id.label.text }}
+                    </label>
+                    {{ form.partner_id(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent") }}
+                </div>
+                
+                <!-- Project Code -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.project_code.label.text }}
+                    </label>
+                    {{ form.project_code(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent", placeholder="PRJ-001") }}
+                </div>
+                
+                <!-- Reference No -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.reference_no.label.text }}
+                    </label>
+                    {{ form.reference_no(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent", placeholder="INV-2024-001") }}
+                </div>
+            </div>
+            
+            <!-- Description -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    {{ form.description.label.text }}
+                </label>
+                {{ form.description(class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent", rows="3", placeholder="أدخل وصف تفصيلي للمعاملة...") }}
+            </div>
+            
+            <!-- Attachment -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-paperclip ml-2"></i>
+                    المرفقات
+                </label>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-400 transition-colors">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                    <p class="text-sm text-gray-600 mb-2">اسحب الملف هنا أو انقر للاختيار</p>
+                    {{ form.attachment(class="hidden", id="file-upload") }}
+                    <label for="file-upload" class="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-upload ml-2"></i>
+                        اختر ملف
+                    </label>
+                    <p class="text-xs text-gray-500 mt-2">PDF, DOC, JPG, PNG (حد أقصى 16MB)</p>
+                </div>
+                {% if form.attachment.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.attachment.errors[0] }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex justify-between">
+                <a href="{{ url_for('transactions.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-times ml-2"></i>
+                    إلغاء
+                </a>
+                <div class="space-x-3 space-x-reverse">
+                    <button type="submit" name="submit" class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-save ml-2"></i>
+                        حفظ كمسودة
+                    </button>
+                    {% if current_user.has_permission('can_approve') %}
+                    <button type="submit" name="submit_approve" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-check-circle ml-2"></i>
+                        حفظ واعتماد
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+// File upload preview
+document.getElementById('file-upload').addEventListener('change', function(e) {
+    const fileName = e.target.files[0]?.name;
+    if (fileName) {
+        const label = document.querySelector('label[for="file-upload"]');
+        label.innerHTML = '<i class="fas fa-file ml-2"></i> ' + fileName;
+    }
+});
+
+// Dynamic form changes based on transaction type
+document.querySelector('[name="txn_type"]').addEventListener('change', function(e) {
+    const type = e.target.value;
+    const categorySelect = document.querySelector('[name="category_id"]');
+    
+    // You can filter categories based on type here
+    if (type === 'receipt') {
+        // Show income categories
+    } else if (type === 'payment') {
+        // Show expense categories
+    }
+});
+</script>
+{% endblock %}
