@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}نظام إدارة الخزينة{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .sidebar-link:hover {
+            background: linear-gradient(90deg, rgba(99,102,241,0.1) 0%, rgba(99,102,241,0.05) 100%);
+        }
+        
+        .sidebar-link.active {
+            background: linear-gradient(90deg, rgba(99,102,241,0.15) 0%, rgba(99,102,241,0.1) 100%);
+            border-right: 3px solid #6366f1;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50">
+    {% if current_user.is_authenticated %}
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-gray-200 fixed w-full top-0 z-50">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-cash-register text-indigo-600 text-2xl ml-3"></i>
+                        <span class="text-xl font-bold text-gray-800">نظام الخزينة</span>
+                    </div>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <!-- Notifications -->
+                    <button class="text-gray-500 hover:text-gray-700 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                    </button>
+                    
+                    <!-- User Dropdown -->
+                    <div class="relative group">
+                        <button class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span class="ml-3 text-gray-700 font-medium">{{ current_user.full_name or current_user.username }}</span>
+                            <div class="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block">
+                            <div class="py-1">
+                                <a href="{{ url_for('main.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user-circle ml-2"></i>الملف الشخصي
+                                </a>
+                                <a href="{{ url_for('auth.change_password') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-key ml-2"></i>تغيير كلمة المرور
+                                </a>
+                                <hr class="my-1">
+                                <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt ml-2"></i>تسجيل الخروج
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Sidebar -->
+    <aside class="fixed right-0 top-16 w-64 h-full bg-white shadow-xl border-l border-gray-200 overflow-y-auto">
+        <div class="p-4">
+            <!-- Menu Items -->
+            <ul class="space-y-2">
+                <li>
+                    <a href="{{ url_for('main.dashboard') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors {{ 'active' if request.endpoint == 'main.dashboard' }}">
+                        <i class="fas fa-tachometer-alt ml-3 text-lg"></i>
+                        <span class="font-medium">لوحة التحكم</span>
+                    </a>
+                </li>
+                
+                <!-- Transactions Section -->
+                <li class="pt-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">المعاملات</span>
+                </li>
+                <li>
+                    <a href="{{ url_for('transactions.create') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-plus-circle ml-3 text-lg"></i>
+                        <span class="font-medium">سند جديد</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('transactions.index') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-list ml-3 text-lg"></i>
+                        <span class="font-medium">كل السندات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('transactions.transfer') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-exchange-alt ml-3 text-lg"></i>
+                        <span class="font-medium">تحويل بين الخزائن</span>
+                    </a>
+                </li>
+                
+                <!-- Management Section -->
+                <li class="pt-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">الإدارة</span>
+                </li>
+                <li>
+                    <a href="{{ url_for('cashbox.index') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-box ml-3 text-lg"></i>
+                        <span class="font-medium">الخزائن</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-tags ml-3 text-lg"></i>
+                        <span class="font-medium">التصنيفات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-users ml-3 text-lg"></i>
+                        <span class="font-medium">الشركاء</span>
+                    </a>
+                </li>
+                
+                <!-- Reports Section -->
+                <li class="pt-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">التقارير</span>
+                </li>
+                <li>
+                    <a href="{{ url_for('reports.daily_report') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-calendar-day ml-3 text-lg"></i>
+                        <span class="font-medium">التقرير اليومي</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('reports.monthly_report') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-calendar-alt ml-3 text-lg"></i>
+                        <span class="font-medium">التقرير الشهري</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('reports.cashbox_balance') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-balance-scale ml-3 text-lg"></i>
+                        <span class="font-medium">أرصدة الخزائن</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('reports.by_category') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-chart-pie ml-3 text-lg"></i>
+                        <span class="font-medium">حسب التصنيف</span>
+                    </a>
+                </li>
+                
+                {% if current_user.is_superuser %}
+                <!-- Admin Section -->
+                <li class="pt-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">الإدارة</span>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-users-cog ml-3 text-lg"></i>
+                        <span class="font-medium">المستخدمين</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('reports.audit_log') }}" class="sidebar-link flex items-center p-3 rounded-lg text-gray-700 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-history ml-3 text-lg"></i>
+                        <span class="font-medium">سجل النظام</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="mr-64 mt-16 p-6">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-4">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} p-4 rounded-lg mb-2 
+                            {% if category == 'success' %}bg-green-100 text-green-700 border border-green-400
+                            {% elif category == 'danger' %}bg-red-100 text-red-700 border border-red-400
+                            {% elif category == 'warning' %}bg-yellow-100 text-yellow-700 border border-yellow-400
+                            {% else %}bg-blue-100 text-blue-700 border border-blue-400{% endif %}">
+                            <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} ml-2"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    {% else %}
+    <!-- Not authenticated - show login page -->
+    {% block auth_content %}{% endblock %}
+    {% endif %}
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

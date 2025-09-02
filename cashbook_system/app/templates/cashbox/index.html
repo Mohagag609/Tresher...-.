@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}إدارة الخزائن - نظام الخزينة{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-box ml-2 text-indigo-600"></i>
+                    إدارة الخزائن
+                </h1>
+                <p class="text-gray-600 mt-2">إدارة وعرض جميع الخزائن في النظام</p>
+            </div>
+            {% if current_user.has_permission('can_manage_cashbox') %}
+            <a href="{{ url_for('cashbox.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150">
+                <i class="fas fa-plus ml-2"></i>
+                خزنة جديدة
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Cashboxes Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for cashbox in cashboxes %}
+        <div class="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200 overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-4">
+                <div class="flex items-center justify-between text-white">
+                    <div>
+                        <h3 class="text-lg font-semibold">{{ cashbox.name }}</h3>
+                        <p class="text-indigo-100 text-sm">{{ cashbox.code }}</p>
+                    </div>
+                    <div class="bg-white/20 rounded-full p-3">
+                        {% if cashbox.box_type == 'main' %}
+                            <i class="fas fa-university text-2xl"></i>
+                        {% elif cashbox.box_type == 'petty' %}
+                            <i class="fas fa-wallet text-2xl"></i>
+                        {% else %}
+                            <i class="fas fa-store text-2xl"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Body -->
+            <div class="p-4 space-y-3">
+                <!-- Balance -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 text-sm">الرصيد الحالي</span>
+                    <span class="text-xl font-bold text-gray-900">
+                        {{ "{:,.2f}".format(cashbox.current_balance) }}
+                        <span class="text-xs text-gray-500">{{ cashbox.currency }}</span>
+                    </span>
+                </div>
+                
+                <!-- Opening Balance -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 text-sm">الرصيد الافتتاحي</span>
+                    <span class="text-sm font-medium text-gray-700">
+                        {{ "{:,.2f}".format(cashbox.opening_balance) }}
+                    </span>
+                </div>
+                
+                <!-- Type -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 text-sm">النوع</span>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full 
+                        {% if cashbox.box_type == 'main' %}bg-blue-100 text-blue-800
+                        {% elif cashbox.box_type == 'petty' %}bg-green-100 text-green-800
+                        {% else %}bg-purple-100 text-purple-800{% endif %}">
+                        {% if cashbox.box_type == 'main' %}رئيسية
+                        {% elif cashbox.box_type == 'petty' %}عهدة
+                        {% else %}فرع{% endif %}
+                    </span>
+                </div>
+                
+                <!-- Status -->
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600 text-sm">الحالة</span>
+                    {% if cashbox.is_active %}
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">نشط</span>
+                    {% else %}
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">غير نشط</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Footer Actions -->
+            <div class="border-t border-gray-200 px-4 py-3 bg-gray-50">
+                <div class="flex justify-between">
+                    <a href="{{ url_for('cashbox.view', id=cashbox.id) }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+                        <i class="fas fa-eye ml-1"></i> عرض
+                    </a>
+                    {% if current_user.has_permission('can_manage_cashbox') %}
+                    <a href="{{ url_for('cashbox.edit', id=cashbox.id) }}" class="text-yellow-600 hover:text-yellow-900 text-sm font-medium">
+                        <i class="fas fa-edit ml-1"></i> تعديل
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if not cashboxes %}
+    <!-- Empty State -->
+    <div class="bg-white rounded-lg shadow-sm p-12 text-center">
+        <div class="mx-auto h-24 w-24 bg-gray-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-box text-gray-400 text-4xl"></i>
+        </div>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">لا توجد خزائن</h3>
+        <p class="mt-2 text-sm text-gray-500">ابدأ بإنشاء أول خزنة في النظام</p>
+        {% if current_user.has_permission('can_manage_cashbox') %}
+        <div class="mt-6">
+            <a href="{{ url_for('cashbox.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150">
+                <i class="fas fa-plus ml-2"></i>
+                إنشاء خزنة جديدة
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

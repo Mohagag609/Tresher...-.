@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة التحكم - نظام الخزينة{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            <i class="fas fa-tachometer-alt ml-2 text-indigo-600"></i>
+            لوحة التحكم
+        </h1>
+        <p class="text-gray-600 mt-2">نظرة عامة على حركة الخزائن والمعاملات</p>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Total Balance Card -->
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-blue-100 text-sm">إجمالي الرصيد</p>
+                    <p class="text-3xl font-bold mt-2">{{ "{:,.2f}".format(total_balance) }}</p>
+                    <p class="text-blue-100 text-xs mt-1">جنيه مصري</p>
+                </div>
+                <div class="bg-white/20 rounded-full p-3">
+                    <i class="fas fa-wallet text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Today's Receipts Card -->
+        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-green-100 text-sm">مقبوضات اليوم</p>
+                    <p class="text-3xl font-bold mt-2">{{ "{:,.2f}".format(today_receipts) }}</p>
+                    <p class="text-green-100 text-xs mt-1">جنيه مصري</p>
+                </div>
+                <div class="bg-white/20 rounded-full p-3">
+                    <i class="fas fa-arrow-down text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Today's Payments Card -->
+        <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-red-100 text-sm">مدفوعات اليوم</p>
+                    <p class="text-3xl font-bold mt-2">{{ "{:,.2f}".format(today_payments) }}</p>
+                    <p class="text-red-100 text-xs mt-1">جنيه مصري</p>
+                </div>
+                <div class="bg-white/20 rounded-full p-3">
+                    <i class="fas fa-arrow-up text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pending Approvals Card -->
+        <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-yellow-100 text-sm">بانتظار الاعتماد</p>
+                    <p class="text-3xl font-bold mt-2">{{ pending_count }}</p>
+                    <p class="text-yellow-100 text-xs mt-1">سند</p>
+                </div>
+                <div class="bg-white/20 rounded-full p-3">
+                    <i class="fas fa-clock text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cashboxes Status -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">
+            <i class="fas fa-box ml-2 text-indigo-600"></i>
+            حالة الخزائن
+        </h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الخزنة</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">العملة</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الرصيد الحالي</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">حركة اليوم</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for item in cashboxes %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="bg-indigo-100 rounded-full p-2 ml-3">
+                                    <i class="fas fa-cash-register text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">{{ item.box.name }}</div>
+                                    <div class="text-sm text-gray-500">{{ item.box.code }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.box.currency }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm font-semibold text-gray-900">{{ "{:,.2f}".format(item.balance) }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if item.today_change > 0 %}
+                                <span class="text-sm font-medium text-green-600">+{{ "{:,.2f}".format(item.today_change) }}</span>
+                            {% elif item.today_change < 0 %}
+                                <span class="text-sm font-medium text-red-600">{{ "{:,.2f}".format(item.today_change) }}</span>
+                            {% else %}
+                                <span class="text-sm text-gray-500">0.00</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ url_for('cashbox.view', id=item.box.id) }}" class="text-indigo-600 hover:text-indigo-900">
+                                <i class="fas fa-eye"></i> عرض
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Daily Chart -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                <i class="fas fa-chart-line ml-2 text-indigo-600"></i>
+                الحركة خلال آخر 7 أيام
+            </h2>
+            <canvas id="dailyChart" height="150"></canvas>
+        </div>
+        
+        <!-- Top Categories -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                <i class="fas fa-chart-pie ml-2 text-indigo-600"></i>
+                أكثر بنود الصرف هذا الشهر
+            </h2>
+            <div class="space-y-3">
+                {% for category, total in top_expense_categories %}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-indigo-500 ml-3"></div>
+                        <span class="text-sm text-gray-700">{{ category.name }}</span>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-900">{{ "{:,.2f}".format(total) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Transactions -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-800">
+                <i class="fas fa-history ml-2 text-indigo-600"></i>
+                آخر المعاملات
+            </h2>
+            <a href="{{ url_for('transactions.index') }}" class="text-indigo-600 hover:text-indigo-900 text-sm">
+                عرض الكل <i class="fas fa-arrow-left mr-1"></i>
+            </a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">رقم السند</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النوع</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">المبلغ</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الحالة</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">التاريخ</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for txn in recent_transactions %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="{{ url_for('transactions.view', id=txn.id) }}" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+                                {{ txn.voucher_no }}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if txn.txn_type == 'receipt' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">قبض</span>
+                            {% elif txn.txn_type == 'payment' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">صرف</span>
+                            {% elif txn.txn_type == 'transfer_in' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">تحويل وارد</span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">تحويل صادر</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {{ "{:,.2f}".format(txn.amount) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if txn.status == 'approved' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">معتمد</span>
+                            {% elif txn.status == 'draft' %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">مسودة</span>
+                            {% else %}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">ملغي</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ txn.date.strftime('%Y-%m-%d') }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Daily Chart
+    const ctx = document.getElementById('dailyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_labels | tojson }},
+            datasets: [{
+                label: 'المقبوضات',
+                data: {{ chart_receipts | tojson }},
+                borderColor: 'rgb(34, 197, 94)',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                tension: 0.1
+            }, {
+                label: 'المدفوعات',
+                data: {{ chart_payments | tojson }},
+                borderColor: 'rgb(239, 68, 68)',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
