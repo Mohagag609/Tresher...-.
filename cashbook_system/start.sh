@@ -10,4 +10,4 @@ exec gunicorn \
     --access-logfile - \
     --error-logfile - \
     --log-level info \
-    "run:app"
+    "app_simple_final:app"
